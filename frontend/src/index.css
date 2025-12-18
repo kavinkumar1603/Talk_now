@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+    --animate-fade-in-up: fade-in-up 0.5s ease-out forwards;
+
+    @keyframes fade-in-up {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Global Aegean Theme */
+body {
+    background-color: #ffffff;
+    /* White like island houses */
+    color: #0f172a;
+    /* Slate 900 for text */
+}
+
+/* Aegean Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #0ea5e9;
+    /* Sky 500 - representing the sea */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0284c7;
+    /* Sky 600 */
+}
