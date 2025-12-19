@@ -22,16 +22,11 @@ const Room = () => {
   const [message, setMessage] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [users, setUsers] = useState([]); // Real-time users list
 
   // SOCKET REF
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
-
-  // TEMP USERS (Placeholder as backend doesn't send user list yet)
-  const users = [
-    { id: 1, name: "You", online: true },
-    { id: 2, name: "Others", online: true }
-  ];
 
   /* ============================
      INITIALIZATION & SOCKET
@@ -45,6 +40,7 @@ const Room = () => {
       return;
     }
     const parsedUser = JSON.parse(storedUser);
+    console.log("Room initialized with user:", parsedUser);
     setCurrentUser(parsedUser);
 
     // 2. Room Validation
@@ -79,8 +75,8 @@ const Room = () => {
   useEffect(() => {
     if (!isValidRoom || !currentUser) return;
 
-    // Connect to Socket.IO server (Port 3001)
-    socketRef.current = io("http://localhost:3001");
+    // Connect to Socket.IO server (Port 3000)
+    socketRef.current = io("http://localhost:3000");
 
     // Join Room
     socketRef.current.emit("join_room", {
@@ -99,6 +95,11 @@ const Room = () => {
           self: data.username === currentUser.name
         }
       ]);
+    });
+
+    // Listen for room users list
+    socketRef.current.on("room_users", (data) => {
+      setUsers(data);
     });
 
     // Cleanup on unmount
@@ -223,7 +224,7 @@ const Room = () => {
                 Room {roomId}
               </p>
               <p className="text-xs text-zinc-500">
-                Online Members
+                Online Members ({users.length})
               </p>
             </div>
           </div>
@@ -246,10 +247,10 @@ const Room = () => {
             >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold text-sm">
-                  {user.name.charAt(0)}
+                  {(user.username || "?").charAt(0)}
                 </div>
                 <span className="text-sm font-medium text-zinc-800">
-                  {user.name}
+                  {user.username || "Unknown User"}
                 </span>
               </div>
 
